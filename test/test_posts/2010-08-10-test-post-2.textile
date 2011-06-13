@@ -1,0 +1,7 @@
+---
+title: Test post 2
+tags: [ruby]
+title_photo: 4894723997
+---
+
+photo. 4894723997

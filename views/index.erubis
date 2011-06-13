@@ -1,0 +1,4 @@
+<% @posts.each do |post| -%>
+  <a href="<%= post.permalink %>"><%=post.title %></a>
+  <%= post.content %>
+<% end -%>

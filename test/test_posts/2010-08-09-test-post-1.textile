@@ -1,0 +1,8 @@
+---
+id: 
+title: Test post 1
+tags: [ruby]
+title_photo: 4780215856
+---
+
+photo. 4780215856
