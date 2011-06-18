@@ -5,8 +5,10 @@ require 'sinatra/hackety_sling/post'
 module Sinatra
   module HacketySling
     def self.registered(app)
+      app.set :blog_posts_on_index, 2
+
       app.get '/' do
-        @posts = Post.limit(2).all
+        @posts = Post.limit(app.blog_posts_on_index).all
         erubis :index
       end
 
