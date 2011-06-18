@@ -13,7 +13,7 @@ module Sinatra
       end
 
       app.get '/archive/' do
-        @posts = Post.all
+        @posts = Post.order_by(:date => :desc).all
         erubis :post_list
       end
 
