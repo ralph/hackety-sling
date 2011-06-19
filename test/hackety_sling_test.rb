@@ -33,7 +33,7 @@ describe TestApp do
     end
 
     it 'the number of posts should be configurable' do
-      app.set :blog_posts_on_index, 3
+      app.set :hackety_sling_posts_on_index, 3
       get '/'
       assert last_response.ok?
       assert last_response.body.include? @post_titles[0]
@@ -117,6 +117,13 @@ describe TestApp do
       @post_titles.each do |post_title|
         assert last_response.body.include? post_title
       end
+    end
+  end
+
+  describe 'the atom feed' do
+    it 'should be generated ok' do
+      get '/atom.xml'
+      assert last_response.ok?
     end
   end
 

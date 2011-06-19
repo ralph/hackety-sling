@@ -1,14 +1,17 @@
 require 'bundler/setup'
 require 'sinatra/base'
 require 'sinatra/hackety_sling/post'
+require 'atom'
 
 module Sinatra
   module HacketySling
     def self.registered(app)
-      app.set :blog_posts_on_index, 2
+      app.set :hackety_sling_posts_on_index, 2
+      app.set :hackety_sling_title, nil
+      app.set :hackety_sling_author, nil
 
       app.get '/' do
-        @posts = Post.limit(app.blog_posts_on_index).all
+        @posts = Post.limit(app.hackety_sling_posts_on_index).all
         erubis :index
       end
 
@@ -43,6 +46,29 @@ module Sinatra
         end
         @posts = Post.where(selector_hash).all
         erubis :posts
+      end
+
+      app.get '/atom.xml' do
+        feed = Atom::Feed.new do |f|
+          f.title = app.hackety_sling_title ||= 'HacketySling Blog'
+          blog_url = request.url.sub(request.fullpath, '/')
+          f.links << Atom::Link.new(:href => blog_url)
+          f.links << Atom::Link.new(:rel => 'self', :href => request.url)
+          f.updated = Post.last.date.xmlschema + 'T00:00:00+00:00'
+          author = app.hackety_sling_author ||= app.hackety_sling_title
+          f.authors << Atom::Person.new(:name => author)
+          f.id = blog_url
+          Post.all.each do |post|
+            f.entries << Atom::Entry.new do |e|
+              e.title = post.title
+              e.links << Atom::Link.new(:href => blog_url + post.permalink)
+              e.id = blog_url + post.permalink
+              e.summary = post.title
+              e.updated = post.date.xmlschema + 'T00:00:00+00:00'
+            end
+          end
+        end
+        feed.to_xml
       end
     end
   end
