@@ -11,18 +11,20 @@ module Sinatra
       app.set :hackety_sling_author, nil
 
       app.get '/' do
-        @posts = Post.limit(app.hackety_sling_posts_on_index).all
+        limit = app.hackety_sling_posts_on_index
+        @posts = Post.order_by(:date => :desc).limit(limit).all
         erubis :index
       end
 
       app.get '/archive/' do
-        @posts = Post.order_by(:date => :desc).all
+        @posts = Post.order_by(:date => :asc).all
         erubis :post_list
       end
 
       %w(tags author).each do |attribute|
         app.get "/#{attribute}/:value/" do |value|
-          @posts = Post.where(attribute.to_sym.include => value).all
+          @posts = Post.order_by(:date => :desc)
+          @posts = @posts.where(attribute.to_sym.include => value).all
           erubis :posts
         end
       end
@@ -44,7 +46,7 @@ module Sinatra
         params[:captures].each_with_index do |date_part, index|
           selector_hash[ymd[index]] = date_part.to_i unless date_part.nil?
         end
-        @posts = Post.where(selector_hash).all
+        @posts = Post.order_by(:date => :desc).where(selector_hash).all
         erubis :posts
       end
 
@@ -58,7 +60,7 @@ module Sinatra
           author = app.hackety_sling_author ||= app.hackety_sling_title
           f.authors << Atom::Person.new(:name => author)
           f.id = blog_url
-          Post.all.each do |post|
+          Post.order_by(:date => :desc).all.each do |post|
             f.entries << Atom::Entry.new do |e|
               e.title = post.title
               e.links << Atom::Link.new(:href => blog_url + post.permalink)

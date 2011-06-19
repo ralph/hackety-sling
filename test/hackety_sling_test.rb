@@ -26,20 +26,20 @@ describe TestApp do
     it 'should request the 2 most current posts by default' do
       get '/'
       assert last_response.ok?
-      assert last_response.body.include? @post_titles[0]
-      assert last_response.body.include? @post_titles[1]
-      refute last_response.body.include? @post_titles[2]
-      refute last_response.body.include? @post_titles[3]
+      refute last_response.body.include? @post_titles[0]
+      refute last_response.body.include? @post_titles[1]
+      assert last_response.body.include? @post_titles[2]
+      assert last_response.body.include? @post_titles[3]
     end
 
     it 'the number of posts should be configurable' do
       app.set :hackety_sling_posts_on_index, 3
       get '/'
       assert last_response.ok?
-      assert last_response.body.include? @post_titles[0]
+      refute last_response.body.include? @post_titles[0]
       assert last_response.body.include? @post_titles[1]
       assert last_response.body.include? @post_titles[2]
-      refute last_response.body.include? @post_titles[3]
+      assert last_response.body.include? @post_titles[3]
     end
   end
 
