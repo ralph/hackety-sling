@@ -65,7 +65,7 @@ module Sinatra
               e.title = post.title
               e.links << Atom::Link.new(:href => blog_url + post.permalink)
               e.id = blog_url + post.permalink
-              e.summary = post.title
+              e.content = Atom::Content::Html.new post.to_html
               e.updated = post.date.xmlschema + 'T00:00:00+00:00'
             end
           end
