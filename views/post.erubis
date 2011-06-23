@@ -1,2 +1,2 @@
 <%= @post.title %>
-<%= @post.content %>
+<%= @post.to_html %>

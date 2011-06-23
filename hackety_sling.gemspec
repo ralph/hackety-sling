@@ -20,4 +20,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'sinatra'
   s.add_dependency 'ratom'
   s.add_development_dependency 'rack-test'
+  s.add_development_dependency 'RedCloth'
 end
