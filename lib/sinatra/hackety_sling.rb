@@ -60,7 +60,7 @@ module Sinatra
           author = app.hackety_sling_author ||= app.hackety_sling_title
           f.authors << Atom::Person.new(:name => author)
           f.id = blog_url
-          Post.order_by(:date => :desc).all.each do |post|
+          Post.order_by(:date => :desc).limit(10).all.each do |post|
             f.entries << Atom::Entry.new do |e|
               e.title = post.title
               e.links << Atom::Link.new(:href => blog_url + post.permalink)
