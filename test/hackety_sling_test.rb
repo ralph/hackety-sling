@@ -19,7 +19,7 @@ describe TestApp do
   end
 
   before do
-    @post_titles = Sinatra::HacketySling::Post.all.map(&:title)
+    @post_titles = Sinatra::HacketySling::Post.order_by(:title => :asc).all.map(&:title)
   end
 
   describe 'when requesting the index path' do
