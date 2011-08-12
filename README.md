@@ -27,7 +27,7 @@ class MySuperBlog < Sinatra::Base
   set :hackety_sling_posts_on_index
 
   get '/other-sinatra-page/' do
-    erubis :other-sinatra-page
+    erubis :other_sinatra_page
   end
 end
 ```
