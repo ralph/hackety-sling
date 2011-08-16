@@ -1,6 +1,6 @@
 # Hackety Sling
 
-![http://travis-ci.org/ralph/hackety_sling](http://travis-ci.org/ralph/hackety_sling.png)
+[![Build Status](https://secure.travis-ci.org/ralph/hackety-sling.png)](http://travis-ci.org/ralph/hackety-sling)
 
 Hackety Sling is a very simple blog software based on [Sinatra](http://github.com/sinatra/sinatra) and [Document Mapper](http://github.com/ralph/document_mapper). It will add the following pages to your Sinatra application:
 
