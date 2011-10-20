@@ -13,26 +13,26 @@ module Sinatra
       app.get '/' do
         limit = app.hackety_sling_posts_on_index
         @posts = Post.order_by(:date => :desc).limit(limit).all
-        erubis :index
+        erb :index
       end
 
       app.get '/archive/' do
         @posts = Post.order_by(:date => :asc).all
-        erubis :post_list
+        erb :post_list
       end
 
       %w(tags author).each do |attribute|
         app.get "/#{attribute}/:value/" do |value|
           @posts = Post.order_by(:date => :desc)
           @posts = @posts.where(attribute.to_sym.include => value).all
-          erubis :posts
+          erb :posts
         end
       end
 
       Post.all.each do |post|
         app.get post.permalink do
           @post = post
-          erubis :post
+          erb :post
         end
         base_name = post.file_name_without_extension.sub(/^\d{4}-\d{2}-\d{2}-/, '')
         app.get "/#{base_name}/" do
@@ -47,7 +47,7 @@ module Sinatra
           selector_hash[ymd[index]] = date_part.to_i unless date_part.nil?
         end
         @posts = Post.order_by(:date => :desc).where(selector_hash).all
-        erubis :posts
+        erb :posts
       end
 
       app.get '/atom.xml' do
