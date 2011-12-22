@@ -23,7 +23,7 @@ describe TestApp do
   end
 
   describe 'when requesting the index path' do
-    it 'should request the 2 most current posts by default' do
+    it 'displays the 2 most current posts by default' do
       get '/'
       assert last_response.ok?
       refute last_response.body.include? @post_titles[0]
@@ -32,7 +32,7 @@ describe TestApp do
       assert last_response.body.include? @post_titles[3]
     end
 
-    it 'the number of posts should be configurable' do
+    it 'the number of posts is configurable' do
       app.set :hackety_sling_posts_on_index, 3
       get '/'
       assert last_response.ok?
@@ -44,7 +44,7 @@ describe TestApp do
   end
 
   describe 'when requesting posts by time' do
-    it 'should show all posts of one year' do
+    it 'shows all posts of one year' do
       get '/2010/'
       assert last_response.ok?
       assert last_response.body.include? @post_titles[0]
@@ -53,7 +53,7 @@ describe TestApp do
       refute last_response.body.include? @post_titles[3]
     end
 
-    it 'should show all posts of one month' do
+    it 'shows all posts of one month' do
       get '/2010/11/'
       assert last_response.ok?
       refute last_response.body.include? @post_titles[0]
@@ -62,7 +62,7 @@ describe TestApp do
       refute last_response.body.include? @post_titles[3]
     end
 
-    it 'should show all posts of one day' do
+    it 'shows all posts of one day' do
       get '/2010/08/10/'
       assert last_response.ok?
       refute last_response.body.include? @post_titles[0]
@@ -73,7 +73,7 @@ describe TestApp do
   end
 
   describe 'when requesting a certain blog post' do
-    it 'should show the blog post' do
+    it 'shows the blog post' do
       get '/2010/11/13/test-post-3/'
       assert last_response.ok?
       refute last_response.body.include? @post_titles[0]
@@ -82,14 +82,14 @@ describe TestApp do
       refute last_response.body.include? @post_titles[3]
     end
 
-    it 'should redirect to the url with date if only the slug was given' do
+    it 'redirects to the url with date if only the slug was given' do
       get '/test-post-2/'
       assert_redirected_to '/2010/08/10/test-post-2/', 301
     end
   end
 
   describe 'when requesting posts by tag' do
-    it 'should show all posts with a certain tag' do
+    it 'shows all posts with a certain tag' do
       get '/tags/ruby/'
       assert last_response.ok?
       assert last_response.body.include? @post_titles[0]
@@ -100,7 +100,7 @@ describe TestApp do
   end
 
   describe 'when requesting posts by author' do
-    it 'should show all posts with a certain author' do
+    it 'shows all posts with a certain author' do
       get '/author/ralph/'
       assert last_response.ok?
       refute last_response.body.include? @post_titles[0]
@@ -111,7 +111,7 @@ describe TestApp do
   end
 
   describe 'when requesting the archive page' do
-    it 'should respond to the archive path' do
+    it 'responds to the archive path' do
       get '/archive/'
       assert last_response.ok?
       @post_titles.each do |post_title|
@@ -121,7 +121,7 @@ describe TestApp do
   end
 
   describe 'the atom feed' do
-    it 'should be generated ok' do
+    it 'is generated ok' do
       get '/atom.xml'
       assert last_response.ok?
     end
