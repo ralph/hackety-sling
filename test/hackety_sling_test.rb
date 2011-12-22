@@ -26,20 +26,15 @@ describe TestApp do
     it 'displays the 2 most current posts by default' do
       get '/'
       assert last_response.ok?
-      refute last_response.body.include? @post_titles[0]
-      refute last_response.body.include? @post_titles[1]
-      assert last_response.body.include? @post_titles[2]
-      assert last_response.body.include? @post_titles[3]
+      assert_equal ['Test post 4', 'Test post 3'], post_titles
     end
 
     it 'the number of posts is configurable' do
       app.set :hackety_sling_posts_on_index, 3
       get '/'
+      app.set :hackety_sling_posts_on_index, 2 # set back to original value
       assert last_response.ok?
-      refute last_response.body.include? @post_titles[0]
-      assert last_response.body.include? @post_titles[1]
-      assert last_response.body.include? @post_titles[2]
-      assert last_response.body.include? @post_titles[3]
+      assert_equal ['Test post 4', 'Test post 3', 'Test post 2'], post_titles
     end
   end
 
@@ -47,28 +42,19 @@ describe TestApp do
     it 'shows all posts of one year' do
       get '/2010/'
       assert last_response.ok?
-      assert last_response.body.include? @post_titles[0]
-      assert last_response.body.include? @post_titles[1]
-      assert last_response.body.include? @post_titles[2]
-      refute last_response.body.include? @post_titles[3]
+      assert_equal ['Test post 3', 'Test post 2', 'Test post 1'], post_titles
     end
 
     it 'shows all posts of one month' do
       get '/2010/11/'
       assert last_response.ok?
-      refute last_response.body.include? @post_titles[0]
-      refute last_response.body.include? @post_titles[1]
-      assert last_response.body.include? @post_titles[2]
-      refute last_response.body.include? @post_titles[3]
+      assert_equal ['Test post 3'], post_titles
     end
 
     it 'shows all posts of one day' do
       get '/2010/08/10/'
       assert last_response.ok?
-      refute last_response.body.include? @post_titles[0]
-      assert last_response.body.include? @post_titles[1]
-      refute last_response.body.include? @post_titles[2]
-      refute last_response.body.include? @post_titles[3]
+      assert_equal ['Test post 2'], post_titles
     end
   end
 
@@ -76,10 +62,7 @@ describe TestApp do
     it 'shows the blog post' do
       get '/2010/11/13/test-post-3/'
       assert last_response.ok?
-      refute last_response.body.include? @post_titles[0]
-      refute last_response.body.include? @post_titles[1]
-      assert last_response.body.include? @post_titles[2]
-      refute last_response.body.include? @post_titles[3]
+      assert_equal ['Test post 3'], post_titles
     end
 
     it 'redirects to the url with date if only the slug was given' do
@@ -92,10 +75,7 @@ describe TestApp do
     it 'shows all posts with a certain tag' do
       get '/tags/ruby/'
       assert last_response.ok?
-      assert last_response.body.include? @post_titles[0]
-      assert last_response.body.include? @post_titles[1]
-      refute last_response.body.include? @post_titles[2]
-      refute last_response.body.include? @post_titles[3]
+      assert_equal ['Test post 2', 'Test post 1'], post_titles
     end
   end
 
@@ -103,10 +83,7 @@ describe TestApp do
     it 'shows all posts with a certain author' do
       get '/author/ralph/'
       assert last_response.ok?
-      refute last_response.body.include? @post_titles[0]
-      refute last_response.body.include? @post_titles[1]
-      assert last_response.body.include? @post_titles[2]
-      refute last_response.body.include? @post_titles[3]
+      assert_equal ['Test post 3'], post_titles
     end
   end
 
@@ -138,5 +115,8 @@ describe TestApp do
     assert status == last_response.status, status_msg
     assert (path == redirect_url || url(path) == redirect_url), location_msg
   end
-end
 
+  def post_titles
+    last_response.body.scan(/Test post \d/)
+  end
+end
