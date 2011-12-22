@@ -16,13 +16,13 @@ module Sinatra
         erb :index
       end
 
-      app.get '/archive/' do
+      app.get '/archive/?' do
         @posts = Post.order_by(:date => :asc).all
         erb :post_list
       end
 
       %w(tags author).each do |attribute|
-        app.get "/#{attribute}/:value/" do |value|
+        app.get "/#{attribute}/:value/?" do |value|
           @posts = Post.order_by(:date => :desc)
           @posts = @posts.where(attribute.to_sym.include => value).all
           erb :posts
@@ -30,18 +30,18 @@ module Sinatra
       end
 
       Post.all.each do |post|
-        app.get post.permalink do
+        app.get "#{post.permalink}?" do
           @post = post
           erb :post
         end
         base_name = post.file_name_without_extension.sub(/^\d{4}-\d{2}-\d{2}-/, '')
-        app.get "/#{base_name}/" do
+        app.get "/#{base_name}/?" do
           redirect post.permalink, 301
         end
       end
 
       ymd = [:year, :month, :day]
-      app.get %r{^/(\d{4}/)(\d{2}/)?(\d{2}/)?$} do
+      app.get %r{^/(\d{4}/?)(\d{2}/?)?(\d{2}/?)?$} do
         selector_hash = {}
         params[:captures].each_with_index do |date_part, index|
           selector_hash[ymd[index]] = date_part.to_i unless date_part.nil?
