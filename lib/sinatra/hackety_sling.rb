@@ -17,7 +17,7 @@ module Sinatra
       end
 
       app.get '/archive/?' do
-        @posts = Post.order_by(:date => :asc).all
+        @posts = Post.order_by(:date => :desc).all
         erb :post_list
       end
 
