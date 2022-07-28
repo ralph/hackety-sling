@@ -34,14 +34,14 @@ module Sinatra
           @post = post
           erb :post
         end
-        base_name = post.file_name_without_extension.sub(/^\d{4}-\d{2}-\d{2}-/, '')
+        base_name = post.file_name_without_extension.sub(/\d{4}-\d{2}-\d{2}-/, '')
         app.get "/#{base_name}/?" do
           redirect post.permalink, 301
         end
       end
 
       ymd = [:year, :month, :day]
-      app.get %r{^/(\d{4}/?)(\d{2}/?)?(\d{2}/?)?$} do
+      app.get %r{/(\d{4}/?)(\d{2}/?)?(\d{2}/?)?} do
         selector_hash = {}
         params[:captures].each_with_index do |date_part, index|
           selector_hash[ymd[index]] = date_part.to_i unless date_part.nil?
