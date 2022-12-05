@@ -1,11 +1,9 @@
 $:.push File.expand_path('../../lib', __FILE__)
 
 require 'bundler/setup'
+require 'minitest/autorun'
 require 'sinatra/hackety_sling'
-require 'minitest/spec'
-require 'minitest/mock'
 require 'rack/test'
-MiniTest::Unit.autorun
 
 require File.expand_path('../test_app', __FILE__)
 
