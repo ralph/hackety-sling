@@ -12,18 +12,18 @@ module Sinatra
 
       app.get '/' do
         limit = app.hackety_sling_posts_on_index
-        @posts = Post.order_by(:date => :desc).limit(limit).all
+        @posts = Post.order_by(date: :desc).limit(limit).all
         erb :index
       end
 
       app.get '/archive/?' do
-        @posts = Post.order_by(:date => :desc).all
+        @posts = Post.order_by(date: :desc).all
         erb :post_list
       end
 
       %w(tags author).each do |attribute|
         app.get "/#{attribute}/:value/?" do |value|
-          @posts = Post.order_by(:date => :desc)
+          @posts = Post.order_by(date: :desc)
           @posts = @posts.where(attribute.to_sym.include => value).all
           erb :posts
         end
@@ -46,24 +46,28 @@ module Sinatra
         params[:captures].each_with_index do |date_part, index|
           selector_hash[ymd[index]] = date_part.to_i unless date_part.nil?
         end
-        @posts = Post.order_by(:date => :desc).where(selector_hash).all
-        erb :posts
+        @posts = Post.order_by(date: :desc).where(selector_hash).all
+        if @posts.length == 1
+          redirect @posts.first.permalink, 301
+        else
+          erb :posts
+        end
       end
 
       app.get '/atom.xml' do
         feed = Atom::Feed.new do |f|
           f.title = app.hackety_sling_title ||= 'HacketySling Blog'
           blog_url = request.url.sub(request.fullpath, '/')
-          f.links << Atom::Link.new(:href => blog_url)
-          f.links << Atom::Link.new(:rel => 'self', :href => request.url)
+          f.links << Atom::Link.new(href: blog_url)
+          f.links << Atom::Link.new(rel: 'self', href: request.url)
           f.updated = Post.last.date.xmlschema + 'T00:00:00+00:00'
           author = app.hackety_sling_author ||= app.hackety_sling_title
-          f.authors << Atom::Person.new(:name => author)
+          f.authors << Atom::Person.new(name: author)
           f.id = blog_url
-          Post.order_by(:date => :desc).limit(10).all.each do |post|
+          Post.order_by(date: :desc).limit(10).all.each do |post|
             f.entries << Atom::Entry.new do |e|
               e.title = post.title
-              e.links << Atom::Link.new(:href => blog_url + post.permalink)
+              e.links << Atom::Link.new(href: blog_url + post.permalink)
               e.id = blog_url + post.permalink
               e.content = Atom::Content::Html.new post.to_html
               e.updated = post.date.xmlschema + 'T00:00:00+00:00'

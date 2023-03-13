@@ -1,0 +1,7 @@
+---
+title: Test post 3
+tags: [lol]
+title_photo: 4894724000
+---
+
+photo. 4894724000

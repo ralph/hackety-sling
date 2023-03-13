@@ -17,22 +17,23 @@ describe TestApp do
   end
 
   before do
-    @post_titles = Sinatra::HacketySling::Post.order_by(:title => :asc).all.map(&:title)
+    @post_titles = Sinatra::HacketySling::Post.order_by(title: :asc).all.map(&:title)
   end
 
   describe 'when requesting the index path' do
     it 'displays the 2 most current posts by default' do
+      app.set :hackety_sling_posts_on_index, 2
       get '/'
       assert last_response.ok?
-      assert_equal ['Test post 4', 'Test post 3'], post_titles
+      assert_equal ['Test post 5', 'Test post 4'], post_titles
     end
 
     it 'the number of posts is configurable' do
       app.set :hackety_sling_posts_on_index, 3
       get '/'
-      app.set :hackety_sling_posts_on_index, 2 # set back to original value
       assert last_response.ok?
-      assert_equal ['Test post 4', 'Test post 3', 'Test post 2'], post_titles
+      assert_equal ['Test post 5', 'Test post 4', 'Test post 2'], post_titles
+      app.set :hackety_sling_posts_on_index, 2 # set back to original value
     end
   end
 
@@ -40,32 +41,37 @@ describe TestApp do
     it 'shows all posts of one year' do
       get '/2010/'
       assert last_response.ok?
-      assert_equal ['Test post 3', 'Test post 2', 'Test post 1'], post_titles
+      assert_equal ['Test post 4', 'Test post 2', 'Test post 3', 'Test post 1'], post_titles
     end
 
     it 'shows all posts of one month' do
-      get '/2010/11/'
+      get '/2010/08/'
       assert last_response.ok?
-      assert_equal ['Test post 3'], post_titles
+      assert_equal ['Test post 2', 'Test post 3', 'Test post 1'], post_titles
     end
 
     it 'shows all posts of one day' do
       get '/2010/08/10/'
       assert last_response.ok?
-      assert_equal ['Test post 2'], post_titles
+      assert_equal ['Test post 2', 'Test post 3'], post_titles
+    end
+
+    it 'redirects to the post permalink if it is the only post' do
+      get '/2010/08/09/'
+      assert_redirected_to '/2010/08/09/test-post-1/', 301
     end
   end
 
   describe 'when requesting a certain blog post' do
     it 'shows the blog post' do
-      get '/2010/11/13/test-post-3/'
+      get '/2010/11/13/test-post-4/'
       assert last_response.ok?
-      assert_equal ['Test post 3'], post_titles
+      assert_equal ['Test post 4'], post_titles
     end
 
     it 'redirects to the url with date if only the slug was given' do
-      get '/test-post-2/'
-      assert_redirected_to '/2010/08/10/test-post-2/', 301
+      get '/test-post-1/'
+      assert_redirected_to '/2010/08/09/test-post-1/', 301
     end
   end
 
@@ -81,7 +87,7 @@ describe TestApp do
     it 'shows all posts with a certain author' do
       get '/author/ralph/'
       assert last_response.ok?
-      assert_equal ['Test post 3'], post_titles
+      assert_equal ['Test post 4'], post_titles
     end
   end
 
