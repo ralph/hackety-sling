@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://rvdh.de'
   s.summary     = %q{A simple blog engine based on Sinatra and document_mapper}
   s.description = %q{A simple blog engine based on Sinatra and document_mapper}
+  s.license     = 'MIT'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
