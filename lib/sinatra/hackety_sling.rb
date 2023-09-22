@@ -55,6 +55,7 @@ module Sinatra
       end
 
       app.get '/atom.xml' do
+        content_type 'application/atom+xml'
         feed = Atom::Feed.new do |f|
           f.title = app.hackety_sling_title ||= 'HacketySling Blog'
           blog_url = request.url.sub(request.fullpath, '/')
@@ -74,7 +75,7 @@ module Sinatra
             end
           end
         end
-        feed.to_xml
+        feed.to_xml.to_s
       end
     end
   end
